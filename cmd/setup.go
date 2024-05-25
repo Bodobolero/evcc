@@ -948,15 +948,12 @@ func configureDevices(conf globalconfig.All) error {
 	if err := configureMeters(conf.Meters, references.meter...); err != nil {
 		errs = append(errs, &ClassError{ClassMeter, err})
 	}
-
+	if err := configureVehicles(conf.Vehicles); err != nil {
+		return err
+	}
 	if err := configureChargers(conf.Chargers, references.charger...); err != nil {
 		errs = append(errs, &ClassError{ClassCharger, err})
 	}
-
-	if err := configureVehicles(conf.Vehicles); err != nil {
-		errs = append(errs, &ClassError{ClassVehicle, err})
-	}
-
 	if err := configureCircuits(&conf.Circuits); err != nil {
 		errs = append(errs, &ClassError{ClassCircuit, err})
 	}
