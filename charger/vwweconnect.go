@@ -108,6 +108,8 @@ func (c *WeConnect) Enable(enable bool) error {
 	}
 }
 
+var _ api.MeterEnergy = (*WeConnect)(nil)
+
 // TotalEnergy implements the api.MeterEnergy interface
 func (c *WeConnect) TotalEnergy() (float64, error) {
 	return 0.0, fmt.Errorf("vwweconnect charger does not support TotalEnergy")
