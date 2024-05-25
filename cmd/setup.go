@@ -814,11 +814,11 @@ func configureDevices(conf globalconfig.All) error {
 	if err := configureMeters(conf.Meters); err != nil {
 		return &ClassError{ClassMeter, err}
 	}
+	if err := configureVehicles(conf.Vehicles); err != nil {
+		return err
+	}
 	if err := configureChargers(conf.Chargers); err != nil {
 		return &ClassError{ClassCharger, err}
-	}
-	if err := configureVehicles(conf.Vehicles); err != nil {
-		return &ClassError{ClassVehicle, err}
 	}
 	if err := configureCircuits(conf.Circuits); err != nil {
 		return &ClassError{ClassCircuit, err}
