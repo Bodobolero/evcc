@@ -785,13 +785,13 @@ func configureDevices(conf globalConfig) error {
 	if err := configureMeters(conf.Meters); err != nil {
 		return err
 	}
+	if err := configureVehicles(conf.Vehicles); err != nil {
+		return err
+	}
 	if err := configureChargers(conf.Chargers); err != nil {
 		return err
 	}
-	if err := configureCircuits(conf.Circuits); err != nil {
-		return err
-	}
-	return configureVehicles(conf.Vehicles)
+	return configureCircuits(conf.Circuits)
 }
 
 func configureSiteAndLoadpoints(conf globalConfig) (*core.Site, error) {
