@@ -81,11 +81,11 @@ The personal sponsor token requires a [Github Sponsorship](https://github.com/sp
 ```bash
 git remote add upstream git@github.com:evcc-io/evcc.git
 git fetch upstream
-git checkout main
-git rebase upstream/main
+git checkout master
+git rebase upstream/master
 # Resolve any conflicts, then
 git rebase --continue
-git push origin main --force
+git push origin master --force
 ```bash
 
 >>>>>>> 4a9971795 (building locally)
