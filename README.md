@@ -56,3 +56,17 @@ Maintaining evcc consumes time and effort. With the vast amount of different dev
 While evcc is open source, we would also like to encourage vendors to provide open source hardware devices, public documentation and support open source projects like ours that provide additional value to otherwise closed hardware. Where this is not the case, evcc requires "sponsor token" to finance ongoing development and support of evcc.
 
 The personal sponsor token requires a [Github Sponsorship](https://github.com/sponsors/evcc-io) and can be requested at [sponsor.evcc.io](https://sponsor.evcc.io/).
+
+
+## rebasing this repo from upstream repo
+
+```bash
+git remote add upstream git@github.com:evcc-io/evcc.git
+git fetch upstream
+git checkout main
+git rebase upstream/main
+# Resolve any conflicts, then
+git rebase --continue
+git push origin main --force
+```bash
+
