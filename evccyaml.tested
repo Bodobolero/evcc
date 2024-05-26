@@ -11,25 +11,32 @@ levels:
 # unique installation id
 plant: 8991100247be3a50cf74a4be3550dd5362b478ff05ac82a1ea2e6db27cc9964a
 
-interval: 30s # control cycle interval
+interval: 300s # control cycle interval
 
 meters:
-- type: custom
-  name: pv
-  power:
-    source: http
-    uri: http://localhost:7777/flow
-    method: GET
-    jq: .pv
-    timeout: 3s
-- type: custom
-  name: grid
-  power:
-    source: http
-    uri: http://localhost:7777/flow
-    method: GET
-    jq: .grid
-    timeout: 3s
+- name: pv
+  type: movingaverage
+  decay: 0.3
+  meter:
+    type: custom
+    power:
+      source: http
+      uri: http://localhost:7777/flow
+      method: GET
+      jq: .pv
+      timeout: 3s
+- name: grid
+  type: movingaverage
+  decay: 0.3
+  meter:
+    type: custom
+    power:
+      source: http
+      uri: http://localhost:7777/flow
+      method: GET
+      jq: .grid
+      timeout: 3s
+
 
 vehicles:
 - type: template
