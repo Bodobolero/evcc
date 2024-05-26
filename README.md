@@ -154,6 +154,7 @@ node --version
 ```
 
 npm: 10.5.2
+
 node: v20.13.1
 
 
@@ -178,13 +179,17 @@ Add the rsa key to your github account which has the private repo for the Solare
 
 
 #### build solaredge api 
-
+```bash
 git clone git@github.com:Bodobolero/solaredge-go-library.git
 cd solaredge-go-library/
 make
+```
 
 #### convert into a system service
+```bash
 sudo nano /etc/systemd/system/solaredge.service
+```
+insert the following content (replace the credentials with your own)
 
 ```
 [Unit]
@@ -240,7 +245,7 @@ sudo mkswap /swapfile
 sudo swapon /swapfile
 ```
 
-then when the make completes:
+then when the make completes you can remove the swap file again (to protect your SD-card)
 
 ```
 sudo swapoff /swapfile
@@ -257,10 +262,16 @@ scp evcc.db pi@192.168.178.17:/home/pi/.evcc/evcc.db
 
 #### check config
 
+```bash
 ./evcc checkconfig
+```
 
 #### convert into a system service
+````bash
 sudo nano /etc/systemd/system/evcc.service
+```
+
+Insert the following content
 
 ```
 [Unit]
