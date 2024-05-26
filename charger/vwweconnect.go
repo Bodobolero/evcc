@@ -17,8 +17,10 @@ package charger
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/evcc-io/evcc/api"
+	"github.com/evcc-io/evcc/provider"
 	"github.com/evcc-io/evcc/util"
 	"github.com/evcc-io/evcc/util/config"
 )
@@ -71,7 +73,8 @@ func NewVWConnect(log *util.Logger, vehicle api.Vehicle) (*WeConnect, error) {
 }
 
 func (wb *WeConnect) MaxCurrent(current int64) error {
-	return fmt.Errorf("MaxCurrent() not implemented for VWWConnect charge brick")
+	wb.log.DEBUG.Println("MaxCurrent() not implemented for VWWConnect charge brick: requested", current, " A")
+	return nil
 }
 
 // Status implements the api.Charger interface
@@ -102,7 +105,11 @@ func (c *WeConnect) Enabled() (bool, error) {
 // Enable implements the api.Charger interface
 func (c *WeConnect) Enable(enable bool) error {
 	if chargerIF, ok := c.vehicle.(api.ChargeController); ok {
-		return chargerIF.ChargeEnable(enable)
+		err := chargerIF.ChargeEnable(enable)
+		time.Sleep(10 * time.Second)
+		provider.ResetCached()
+		time.Sleep(30 * time.Second)
+		return err
 	} else {
 		return fmt.Errorf("vechicle does not support charge controller")
 	}
