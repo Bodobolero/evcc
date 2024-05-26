@@ -1,0 +1,79 @@
+# open evcc at http://evcc.local:7070
+network:
+  schema: http
+  host: evcc.local # .local suffix announces the hostname on MDNS
+  port: 7070
+
+log: debug
+levels:
+  cache: error
+
+# unique installation id
+plant: 8991100247be3a50cf74a4be3550dd5362b478ff05ac82a1ea2e6db27cc9964a
+
+interval: 30s # control cycle interval
+
+meters:
+- type: custom
+  name: pv
+  power:
+    source: http
+    uri: http://localhost:7777/flow
+    method: GET
+    jq: .pv
+    timeout: 3s
+- type: custom
+  name: grid
+  power:
+    source: http
+    uri: http://localhost:7777/flow
+    method: GET
+    jq: .grid
+    timeout: 3s
+
+vehicles:
+- type: template
+  template: vw 
+  title: BB-GP692E  
+  icon: car  
+  user: <myemail>
+  password: <mypassword> 
+  vin: <myvin>  
+  capacity: 58  
+  phases: 1  
+  cache: 15m  
+  mode: pv  
+  minCurrent: 10  
+  maxCurrent: 10  
+  priority: 1  
+  timeout: 1m  
+  name: ev1
+
+
+site:
+  title: Home
+  meters:
+    grid: grid
+    pv:
+    - pv
+
+chargers:
+  - name: ladeziegel
+    type: vwweconnect
+    vehiclename: ev1 
+      
+loadpoints:
+  - title: Doppelgarage # display name for UI
+    charger: ladeziegel # Wallbox Referenz**
+    mode: pv
+    soc:
+      poll:
+        mode: charging
+        interval: 60m
+      estimate: true
+    enable:
+      threshold: -1500
+      delay: 20m
+    disable:
+      threshold: 1000 # maximum import power (W)
+      delay: 20m
