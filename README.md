@@ -285,7 +285,7 @@ scp evcc.db pi@192.168.178.17:/home/pi/.evcc/evcc.db
 ```
 
 #### convert into a system service
-````bash
+```bash
 sudo nano /etc/systemd/system/evcc.service
 ```
 
