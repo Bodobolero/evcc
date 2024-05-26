@@ -156,6 +156,15 @@ node --version
 npm: 10.5.2
 node: v20.13.1
 
+
+### install vite
+
+```bash
+sudo npm install -g vite
+```
+
+
+
 ### Clone my fork
 
 #### enable github access from my pi
@@ -206,7 +215,81 @@ sudo journalctl -u solaredge.service
 curl http://localhost:7777/flow
 ```
 
+### Clone and build evcc fork
+
+```bash
+git clone https://github.com/Bodobolero/evcc.git
+cd evcc
+npm install
+make
+```
+
+#### Errors during build
+
+running out of resources on small raspberrys:
+
+```bash
+github.com/enbility/eebus-go/spine: /usr/local/go/pkg/tool/linux_arm/compile: signal: killed
+```
+
+Create swap and retry make
+```
+sudo fallocate -l 1G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+```
+
+then when the make completes:
+
+```
+sudo swapoff /swapfile
+sudo rm /swapfile
+```
 
 
+copy evcc.yaml and evcc.db to raspberry
+
+```bash
+scp evcc.yaml pi@192.168.178.17:/home/pi/evcc/
+scp evcc.db pi@192.168.178.17:/home/pi/.evcc/evcc.db
+```
+
+#### check config
+
+./evcc checkconfig
+
+#### convert into a system service
+sudo nano /etc/systemd/system/evcc.service
+
+```
+[Unit]
+Description=EVCC PV suplus EV charging Service
+After=network.target
+
+[Service]
+ExecStart=/home/pi/evcc/evcc
+WorkingDirectory=/home/pi/evcc
+Restart=always
+User=pi
+Group=pi
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable evcc.service
+sudo systemctl start evcc.service
+sudo systemctl status evcc.service
+
+#troubleshooting
+sudo journalctl -u evcc.service
+```
+
+#### Access to web interface from local network or VPN
+
+http://192.168.178.17:7070/#/
 
 
