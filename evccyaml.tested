@@ -68,6 +68,15 @@ chargers:
   - name: ladeziegel
     type: vwweconnect
     vehiclename: ev1 
+
+tariffs:
+  currency: EUR # (default EUR)
+  grid:
+    type: fixed
+    price: 0.28 # [currency]/kWh
+  feedin:
+    type: fixed
+    price: 0.13 # [currency]/kWh
       
 loadpoints:
   - title: Doppelgarage # display name for UI
