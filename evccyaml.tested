@@ -34,7 +34,7 @@ meters:
 vehicles:
 - type: template
   template: vw 
-  title: BB-GP692E  
+  title: BB-<mylicenseplate>  
   icon: car  
   user: <myemail>
   password: <mypassword> 
