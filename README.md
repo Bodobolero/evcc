@@ -1,4 +1,67 @@
-# evcc 🚘☀️
+# evcc
+
+This is a fork of https://github.com/evcc-io/evcc
+
+## Added capability in this fork:
+
+see discussion in https://github.com/evcc-io/evcc/issues/12046
+
+### Using Solaredge Rest API as a meter
+
+My meter is connected to the converter over a (twisted pair?) cable S0.
+The SEK5 thus has the consumption values. It also transmits it to the SolarEdge cloud. However so far I did not yet find a way how it re-exports those values over Modbus. So I can not access the consumption locally. My meter is an Eltako DSZ12E
+Verbrauchszähler S0 mit 800 Imp/Kwh
+https://www.eltako.com/fileadmin/downloads/de/_bedienung/DSZ12E-3x80A_28380611-3_dt.pdf
+Eltako DSZ12E 3x80A
+
+I have no local API/access to it, however the Solaredge REST API has the information it collects
+
+I installed the go tool from Ulrich Schreiner https://gitlab.com/ulrichSchreiner/solaredge referenced under https://github.com/evcc-io/evcc/discussions/2941
+
+Thus I did not have to modify evcc but could use the existing custom meter / plugin capability.
+
+However I have a private fork on https://github.com/Bodobolero/solaredge-go-library where I made the following changes
+- polling interval during the night is 15 minutes
+- polling interval during the day (when solarpower is active) is 3 minutes
+- this is to ensure I stay within the Solaredge API request quota of 300/day
+
+### Using Weconnect API with Charge brick (Ladeziegel) as a charger
+
+My use case is:
+
+I have a 5.04 kWp (kilo-watt peak) PV.
+Because I want to use PV energy to charge my car I do not use a wallbox, instead I have a Green-up socket which supports my 1 phase 10-16 A 240 V charging device that comes with my car.
+Since this is our second car we will use it for short distances, usually 2-20 km and the 2.3 kw charging using the green-up socket will be enough to support our usage of the car.
+
+I want an automated solution that decides when to start charging and when to stop charging.
+The decision will be based on the SOC of the car (I will charge at any time until I reach a SOC of x % (e.g. 30 % to support my local commute).
+I want to charge between 30 % and 80 % when there is enough PV production to support the 2.4 kw charging (with 10 A * 240 V), which means when my production is higher than <current consumption> + 2.4 kw.
+
+For that purpose the S0 800 Imp/kWh meter is totally sufficient.
+
+My car has a mileage of 10.000 km per year, at 20 kwh/100 km that is 2000 kwh / year.
+My reimbursement for PV is 13 Eurocent. My energy tarif is 27 cent/kwh.
+
+The total possible savings per year by optimizating the charge time is 27 cent - 13 cent = 14 cent * 2000 kwh.
+That means I can save a total of 280 Euro/year.
+
+Now comes the investment argument:
+I can buy a cheap e-go wallbox that can be remotely controlled (around 300 Euro) and I can also replace the smart meter.
+To modify the house installation I need a certified electrician that will cost me a few hundred Euro.
+
+Which means to get the current implementation of evcc working I need an investment of > 1000 Euro to save 280 Euro per year.
+
+With a few modifications to the software I can achieve the same with just investment in code.
+
+support REST API for SolarEdge in the metering area would save me to replace the meter
+
+support VW We.connect to control the charging instead of requiring a remote-controllable charger would save me to buy a wallbox
+
+Since evcc project owners didn't want my contributions I created a fork and implemented the
+vehicle WeConnect API as a charger to start/stop charging and get the current charging state
+
+## Links
+ 🚘☀️
 
 [![Build](https://github.com/evcc-io/evcc/actions/workflows/nightly.yml/badge.svg)](https://github.com/evcc-io/evcc/actions/workflows/nightly.yml)
 [![Translation](https://hosted.weblate.org/widgets/evcc/-/evcc/svg-badge.svg)](https://hosted.weblate.org/engage/evcc/)
@@ -68,5 +131,82 @@ git rebase upstream/master
 # Resolve any conflicts, then
 git rebase --continue
 git push origin master --force
+```
+
+## Deployment on Raspberry
+
+### Install go
+
 ```bash
+wget https://go.dev/dl/go1.22.3.linux-armv6l.tar.gz
+sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.22.3.linux-armv6l.tar.gz
+export PATH=$PATH:/usr/local/go/bin
+go version
+```
+
+### Install npm
+
+```bash
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash -
+sudo apt-get install -y nodejs
+npm --version
+node --version
+```
+
+npm: 10.5.2
+node: v20.13.1
+
+### Clone my fork
+
+#### enable github access from my pi
+
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
+eval "$(ssh-agent -s)"ssh-add ~/.ssh/id_ed25519
+cat ~/.ssh/id_ed25519.pub
+```
+Add the rsa key to your github account which has the private repo for the Solaredge go library
+
+
+#### build solaredge api 
+
+git clone git@github.com:Bodobolero/solaredge-go-library.git
+cd solaredge-go-library/
+make
+
+#### convert into a system service
+sudo nano /etc/systemd/system/solaredge.service
+
+```
+[Unit]
+Description=SolarEdge API Service
+After=network.target
+
+[Service]
+Environment="SOLAREDGE_APIKEY=<addyourkey>"
+Environment="SOLAREDGE_SITEID=<addyoursite>"
+ExecStart=/home/pi/solaredge-go-library/bin/solaredge serve
+WorkingDirectory=/home/pi/solaredge-go-library/bin/
+Restart=always
+User=pi
+Group=pi
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable solaredge.service
+sudo systemctl start solaredge.service
+sudo systemctl status solaredge.service
+
+#troubleshooting
+sudo journalctl -u solaredge.service
+curl http://localhost:7777/flow
+```
+
+
+
+
 
