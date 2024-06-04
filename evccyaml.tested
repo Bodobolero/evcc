@@ -15,21 +15,28 @@ interval: 123s # control cycle interval
 
 meters:
 - name: pv
-  type: custom
-  power:
-    source: http
-    uri: http://localhost:7777/flow
-    method: GET
-    jq: .pv
-    timeout: 3s
+  type: movingaverage
+  decay: 0.4
+  meter:
+    type: custom
+    power:
+      source: http
+      uri: http://localhost:7777/flow
+      method: GET
+      jq: .pv
+      timeout: 3s
 - name: grid
-  type: custom
-  power:
-    source: http
-    uri: http://localhost:7777/flow
-    method: GET
-    jq: .grid
-    timeout: 3s
+  type: movingaverage
+  decay: 0.4
+  meter:
+    type: custom
+    power:
+      source: http
+      uri: http://localhost:7777/flow
+      method: GET
+      jq: .grid
+      timeout: 3s
+
 
 vehicles:
 - type: template
@@ -82,7 +89,7 @@ loadpoints:
       estimate: true
     enable:
       threshold: -1500
-      delay: 20m
+      delay: 9m
     disable:
       threshold: 1000 # maximum import power (W)
-      delay: 20m
+      delay: 19m
