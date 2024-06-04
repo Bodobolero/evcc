@@ -220,6 +220,12 @@ sudo journalctl -u solaredge.service
 curl http://localhost:7777/flow
 ```
 
+#### In case of error message:
+
+`vehicle not available: cannot create vehicle type 'template': cannot create vehicle type 'vw': missing state``
+
+Log into the "my Volkswagen" website and accept new terms, then restart evcc.
+
 ### Clone and build evcc fork
 
 ```bash
