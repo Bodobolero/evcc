@@ -20,7 +20,6 @@ import (
 	"time"
 
 	"github.com/evcc-io/evcc/api"
-	"github.com/evcc-io/evcc/provider"
 	"github.com/evcc-io/evcc/util"
 	"github.com/evcc-io/evcc/util/config"
 )
@@ -107,11 +106,11 @@ func (c *WeConnect) Enable(enable bool) error {
 	if chargerIF, ok := c.vehicle.(api.ChargeController); ok {
 		err := chargerIF.ChargeEnable(enable)
 		time.Sleep(10 * time.Second)
-		provider.ResetCached()
+		util.ResetCached()
 		time.Sleep(30 * time.Second)
 		return err
 	} else {
-		return fmt.Errorf("vechicle does not support charge controller")
+		return fmt.Errorf("vehicle does not support charge controller")
 	}
 }
 
