@@ -249,10 +249,14 @@ github.com/enbility/eebus-go/spine: /usr/local/go/pkg/tool/linux_arm/compile: si
 
 Create swap and retry make
 ```
-sudo fallocate -l 1G /swapfile
+sudo fallocate -l 2G /swapfile
 sudo chmod 600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
+
+export NODE_OPTIONS="--max-old-space-size=1536"
+make ui
+
 ```
 
 then when the make completes you can remove the swap file again (to protect your SD-card)
