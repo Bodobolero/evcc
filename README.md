@@ -2,6 +2,20 @@
 
 This is a fork of https://github.com/evcc-io/evcc
 
+## Important Note
+
+THIS SOLUTION DOESN'T WORK ANYMORE!
+
+On May 27th, Volkswagen disabled the WeConnect API for third-party applications. This means that the integration of the WeConnect API in this fork of evcc is no longer functional. As a result, the automated charging control based on the WeConnect API will not work until Volkswagen decides to re-enable access to the API for third-party applications, especially open source projects like evcc and home assistant.
+
+There is a petition to re-enable a read-only API to retrieve the SOC and other relevant data from the car, which is crucial for many users who rely on this data for their home energy management and EV charging optimization.
+However, this will not re-enable the fork on this page because we also need the ability to start and stop charging via the API, which is also currently disabled by Volkswagen, and which is not requested by the petition.
+
+References:
+- https://www.heise.de/en/news/VW-cuts-owners-access-to-their-own-vehicle-data-with-API-change-11312776.html
+- Petition https://www.change.org/p/eu-data-act-durchsetzen-autohersteller-m%C3%BCssen-uns-zugang-zu-unseren-fahrzeugdaten-geben
+- https://github.com/evcc-io/evcc/issues/30324
+
 ## Added capability in this fork:
 
 see discussion in https://github.com/evcc-io/evcc/issues/12046
